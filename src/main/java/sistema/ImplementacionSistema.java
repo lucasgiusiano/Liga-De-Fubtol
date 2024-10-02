@@ -1,9 +1,13 @@
 package sistema;
 
+import dominio.ABB.ABB;
+import dominio.Equipo;
+import dominio.Jugador;
 import interfaz.*;
 
 public class ImplementacionSistema implements Sistema {
-
+    public ABB<Jugador> jugadores = new ABB<Jugador>();
+    public ABB<Equipo> equipos = new ABB<Equipo>();
 
     @Override
     public Retorno inicializarSistema(int maxSucursales) {
@@ -12,7 +16,16 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno registrarJugador(String alias, String nombre, String apellido, Categoria categoria) {
-        return Retorno.noImplementada();
+        Jugador j = new Jugador(alias, nombre, apellido, categoria);
+        if(!j.esValido()){
+            return Retorno.error1("Algun dato ingresado es null o vacio");
+        }
+        if(jugadores.existe(j)){
+            return Retorno.error2("Jugador ya existe");
+        }
+        jugadores.insertar(j);
+
+        return Retorno.ok();
     }
 
     @Override
