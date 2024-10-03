@@ -17,6 +17,13 @@ public class Jugador implements Comparable<Jugador> {
         this.categoria = categoria;
     }
 
+    public Jugador(String alias) {
+        this.alias = alias;
+        this.nombre = "";
+        this.apellido = "";
+        this.categoria = null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,8 +73,13 @@ public class Jugador implements Comparable<Jugador> {
     public int compareTo(Jugador o) {
         return this.alias.compareTo(o.alias);
     }
-    public boolean esValido(){
-       return alias.equals("")||nombre.equals("")||apellido.equals("")||categoria==null||alias.equals(null)||nombre.equals(null)||apellido.equals(null)||categoria==null;
 
+    public boolean esValido() {
+        return alias.equals("") || nombre.equals("") || apellido.equals("") || categoria == null || alias.equals(null) || nombre.equals(null) || apellido.equals(null) || categoria == null;
+    }
+
+    @Override
+    public String toString() {
+        return alias + ";" + nombre + ";" + apellido + ";" + categoria;
     }
 }

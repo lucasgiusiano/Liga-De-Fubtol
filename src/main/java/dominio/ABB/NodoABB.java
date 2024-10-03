@@ -15,8 +15,8 @@ public class NodoABB<T> {
 
     public NodoABB(T dato) {
         this.dato = dato;
-        this.izq=null;
-        this.der=null;
+        this.izq = null;
+        this.der = null;
     }
 
     public T getDato() {
