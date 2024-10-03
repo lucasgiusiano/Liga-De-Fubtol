@@ -80,15 +80,15 @@ public class ImplementacionSistema implements Sistema {
         Jugador jugador = jugadores.buscar(new Jugador(aliasJugador));
         Equipo equipo = equipos.buscar(new Equipo(nombreEquipo));
 
-        if (nombreEquipo.equals(null) || nombreEquipo.equals("") || aliasJugador.equals(null) || aliasJugador.equals("")) {
+        if (nombreEquipo == null || nombreEquipo.equals("") || aliasJugador == null || aliasJugador.equals("")) {
             retorno = Retorno.error1("Los campos ingresados fueron nulos o vacíos");
-        } else if (equipo.equals(null)) {
+        } else if (equipo == null) {
             retorno = Retorno.error2("El equipo no existe");
-        } else if (jugador.equals(null)) {
+        } else if (jugador == null) {
             retorno = Retorno.error3("El jugador no existe");
         } else if (equipo.getCantidadJugadores() == 5) {
             retorno = Retorno.error4("El equipo ya tiene cinco integrantes");
-        } else if (!jugador.getCategoria().equals(Categoria.PROFESIONAL)) {
+        } else if (jugador.getCategoria() != Categoria.PROFESIONAL) {
             retorno = Retorno.error5("El jugador no es profesional");
         } else if (jugadorConEquipo(jugador)) {
             retorno = Retorno.error6("El jugador ya pertenece a otro equipo");
@@ -123,7 +123,7 @@ public class ImplementacionSistema implements Sistema {
 
         if (nombreEquipo.equals(null) || nombreEquipo.equals("")) {
             retorno = Retorno.error1("El nombre del equipo fue nulo o vacío");
-        } else if (equipo.equals(null)) {
+        } else if (equipo == null) {
             retorno = Retorno.error2("El equipo no existe");
         } else {
             String listaJugadores = equipo.getJugadores().listarAscendentemente();

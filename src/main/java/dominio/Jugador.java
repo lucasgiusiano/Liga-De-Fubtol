@@ -24,19 +24,6 @@ public class Jugador implements Comparable<Jugador> {
         this.categoria = null;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Jugador jugador = (Jugador) o;
-        return Objects.equals(alias, jugador.alias);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(alias);
-    }
-
     public String getAlias() {
         return alias;
     }
@@ -69,13 +56,26 @@ public class Jugador implements Comparable<Jugador> {
         this.categoria = categoria;
     }
 
+    public boolean esValido() {
+        return !alias.equals("") && !nombre.equals("") && !apellido.equals("") && categoria != null && !alias.equals(null) && !nombre.equals(null) && !apellido.equals(null) && categoria != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Jugador jugador = (Jugador) o;
+        return Objects.equals(alias, jugador.alias);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(alias);
+    }
+
     @Override
     public int compareTo(Jugador o) {
         return this.alias.compareTo(o.alias);
-    }
-
-    public boolean esValido() {
-        return alias.equals("") || nombre.equals("") || apellido.equals("") || categoria == null || alias.equals(null) || nombre.equals(null) || apellido.equals(null) || categoria == null;
     }
 
     @Override

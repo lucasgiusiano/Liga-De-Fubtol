@@ -30,29 +30,33 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
     public void insertar(T dato) {
         if (this.raiz == null) {
             this.raiz = new NodoABB(dato);
+            cantidadElementos++;
         } else {
             insertarRec(this.raiz, dato);
-            cantidadElementos++;
         }
     }
 
     private void insertarRec(NodoABB nodo, T dato) {
         if (dato.compareTo((T) nodo.getDato()) < 0) {
-            if (nodo.getDer() == null) {
-                nodo.setDer(new NodoABB(dato));
-                cantidadElementos++;
-            } else {
-                insertarRec(nodo.getDer(), dato);
-            }
-        } else {
+            // Insertar en el subárbol izquierdo si es menor
             if (nodo.getIzq() == null) {
                 nodo.setIzq(new NodoABB(dato));
                 cantidadElementos++;
             } else {
                 insertarRec(nodo.getIzq(), dato);
             }
+        } else {
+            // Insertar en el subárbol derecho si es mayor o igual
+            if (nodo.getDer() == null) {
+                nodo.setDer(new NodoABB(dato));
+                cantidadElementos++;
+            } else {
+                insertarRec(nodo.getDer(), dato);
+            }
         }
     }
+
+
 
     @Override
     public String listarAscendentemente() {
@@ -120,8 +124,8 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
 
     private T buscarRec(NodoABB nodo, T dato) {
         if (nodo != null) {
-            if (nodo.getDato() == dato) {
-                return dato;
+            if (dato.equals(nodo.getDato())) {
+                return (T) nodo.getDato();  // No es necesario el casting
             } else if (dato.compareTo((T) nodo.getDato()) > 0) {
                 return buscarRec(nodo.getDer(), dato);
             } else {
@@ -130,6 +134,7 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
         }
         return null;
     }
+
 
     @Override
     public T borrarMinimo() {
