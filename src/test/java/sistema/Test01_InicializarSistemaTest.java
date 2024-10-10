@@ -42,35 +42,98 @@ public class Test01_InicializarSistemaTest {
     //Tests Manuel (Hacer un test por cada caso de establecido en el recuadro "ERROR" y "OK" en cada funcionalidad de la letra)
 
     @Test
-    void noDeberiaIngresarJugador() {
+    void noDeberiaIngresarJugadorParametrosVaciosONull() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(4);
 
+        retorno = sistema.registrarJugador("", "Nombre", "Apellido", Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
+
+        retorno = sistema.registrarJugador(null, "Nombre", "Apellido", Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
+
+        retorno = sistema.registrarJugador("Alias", "", "Apellido", Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
+
+        retorno = sistema.registrarJugador("Alias", null, "Apellido", Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
 
     @Test
-    void DeberiaIngresarJugador() {
+    void noDeberiaIngresarJugadorYaExistente() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(4);
 
+        sistema.registrarJugador("Alias", "Nombre", "Apellido", Categoria.PROFESIONAL);
+        retorno = sistema.registrarJugador("Alias", "Nombre", "Apellido", Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
     }
 
     @Test
-    void noDeberiaBuscarJugador() {
+    void deberiaRegistrarJugadorCorrectamente() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(4);
 
+        retorno = sistema.registrarJugador("Alias", "Nombre", "Apellido", Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
     }
 
     @Test
-    void DeberiaBuscarJugador() {
+    void noDeberiaBuscarJugadorParametrosVaciosONull() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(4);
 
+        retorno = sistema.buscarJugador("");
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
+
+        retorno = sistema.buscarJugador(null);
+        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
 
     @Test
-    void ListaDeJugadores() {
+    void noDeberiaBuscarJugadorInexistente() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(4);
 
+        retorno = sistema.buscarJugador("AliasInexistente");
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
     }
 
     @Test
-    void ListaDeJugadoresPorCategoria() {
+    void deberiaBuscarJugadorCorrectamente() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(4);
 
+        sistema.registrarJugador("Alias", "Nombre", "Apellido", Categoria.PROFESIONAL);
+        retorno = sistema.buscarJugador("Alias");
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+        assertEquals("Alias;Nombre;Apellido;PROFESIONAL", retorno.getValorString());
     }
+    @Test
+    void deberiaListarJugadoresCorrectamente() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(4);
 
+        sistema.registrarJugador("Alias1", "Nombre1", "Apellido1", Categoria.PROFESIONAL);
+        sistema.registrarJugador("Alias2", "Nombre2", "Apellido2", Categoria.ESTANDARD);
+
+        retorno = sistema.listarJugadoresAscendente();
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+        assertEquals("Alias1;Nombre1;Apellido1;PROFESIONAL|Alias2;Nombre2;Apellido2;ESTANDARD|", retorno.getValorString());
+    }
+    @Test
+    void deberiaListarJugadoresPorCategoriaCorrectamente() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(4);
+
+        sistema.registrarJugador("Alias1", "Nombre1", "Apellido1", Categoria.PROFESIONAL);
+        sistema.registrarJugador("Alias2", "Nombre2", "Apellido2", Categoria.PROFESIONAL);
+        sistema.registrarJugador("Alias3", "Nombre3", "Apellido3", Categoria.ESTANDARD);
+
+        retorno = sistema.listarJugadoresPorCategoria(Categoria.PROFESIONAL);
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+        assertEquals("Alias1;Nombre1;Apellido1;PROFESIONAL|Alias2;Nombre2;Apellido2;PROFESIONAL", retorno.getValorString());
+    }
 
     //Tests Lucas
 

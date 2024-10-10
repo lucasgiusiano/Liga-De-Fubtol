@@ -57,7 +57,10 @@ public class Jugador implements Comparable<Jugador> {
     }
 
     public boolean esValido() {
-        return !alias.equals("") && !nombre.equals("") && !apellido.equals("") && categoria != null && !alias.equals(null) && !nombre.equals(null) && !apellido.equals(null) && categoria != null;
+        return alias != null && !alias.isEmpty() &&
+                nombre != null && !nombre.isEmpty() &&
+                apellido != null && !apellido.isEmpty() &&
+                categoria != null;
     }
 
     @Override

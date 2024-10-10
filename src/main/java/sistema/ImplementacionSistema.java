@@ -42,17 +42,40 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno buscarJugador(String alias) {
-        return Retorno.noImplementada();
+
+        if (alias == null || alias.isEmpty()) {
+            return Retorno.error1("Alias es vacío o null");
+        }
+
+        Jugador jugadorEncontrado = this.jugadores.buscar(new Jugador(alias));
+
+        if (jugadorEncontrado == null) {
+            return Retorno.error2("No existe un jugador registrado con ese alias");
+        }
+        String resultado = jugadorEncontrado.getAlias() + ";" + jugadorEncontrado.getNombre() + ";" +
+                jugadorEncontrado.getApellido() + ";" + jugadorEncontrado.getCategoria();
+        return Retorno.ok(resultado);
     }
+
 
     @Override
     public Retorno listarJugadoresAscendente() {
-        return Retorno.noImplementada();
+        String resultado = this.jugadores.listarAscendentemente();
+
+        if (resultado.isEmpty()) {
+            return Retorno.ok("No hay jugadores registrados.");
+        }
+        return Retorno.ok(resultado);
     }
 
     @Override
     public Retorno listarJugadoresPorCategoria(Categoria unaCategoria) {
-        return Retorno.noImplementada();
+        String resultado = this.jugadores.listarPorCategoria(unaCategoria);
+
+        if (resultado.isEmpty()) {
+            return Retorno.ok("No hay jugadores registrados en esa categoría.");
+        }
+        return Retorno.ok(resultado);
     }
 
     @Override

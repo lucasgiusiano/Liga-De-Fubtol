@@ -1,6 +1,7 @@
 package dominio.ABB;
 
 import dominio.Jugador;
+import interfaz.Categoria;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,6 +156,30 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
             return min_value;
         }
         return borrarMinimoRec(nodo.getIzq());
+    }
+    public String listarPorCategoria(Categoria categoria) {
+        StringBuilder resultado = new StringBuilder();
+        listarPorCategoriaRec(this.raiz, categoria, resultado);
+        return resultado.toString();
+    }
+
+    private void listarPorCategoriaRec(NodoABB nodo, Categoria categoria, StringBuilder resultado) {
+        if (nodo != null) {
+                                                                        // Recorrer el subárbol izquierdo
+            listarPorCategoriaRec(nodo.getIzq(), categoria, resultado);
+
+                                                                        // Verificar si el jugador pertenece a la categoría especificada
+            Jugador jugador = (Jugador) nodo.getDato();
+            if (categoria.equals(jugador.getCategoria())) {
+                                                                        // Si pertenece a la categoría, agregarlo al resultado con un separador
+                if (resultado.length() > 0) {
+                    resultado.append("|");                              // Agregar separador entre jugadores
+                }
+                resultado.append(jugador.toString());
+            }
+                                                                        // Recorrer el subárbol derecho
+            listarPorCategoriaRec(nodo.getDer(), categoria, resultado);
+        }
     }
 
 }
