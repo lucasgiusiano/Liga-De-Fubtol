@@ -35,11 +35,11 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
         } else {
             insertarRec(this.raiz, dato);
         }
+        balancear();
     }
 
     private void insertarRec(NodoABB nodo, T dato) {
         if (dato.compareTo((T) nodo.getDato()) < 0) {
-            // Insertar en el subárbol izquierdo si es menor
             if (nodo.getIzq() == null) {
                 nodo.setIzq(new NodoABB(dato));
                 cantidadElementos++;
@@ -47,7 +47,6 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
                 insertarRec(nodo.getIzq(), dato);
             }
         } else {
-            // Insertar en el subárbol derecho si es mayor o igual
             if (nodo.getDer() == null) {
                 nodo.setDer(new NodoABB(dato));
                 cantidadElementos++;
@@ -57,7 +56,38 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
         }
     }
 
+    public void balancear() {
+        // Obtener los datos del árbol en una lista ordenada
+        List<T> elementos = new ArrayList<>();
+        obtenerElementosEnOrden(raiz, elementos);
 
+        // Reconstruir el árbol equilibrado
+        this.raiz = construirArbolBalanceado(elementos, 0, elementos.size() - 1);
+    }
+
+    private void obtenerElementosEnOrden(NodoABB<T> nodo, List<T> elementos) {
+        if (nodo != null) {
+            obtenerElementosEnOrden(nodo.getIzq(), elementos); // Subárbol izquierdo
+            elementos.add(nodo.getDato()); // Agregar el dato actual
+            obtenerElementosEnOrden(nodo.getDer(), elementos); // Subárbol derecho
+        }
+    }
+    
+    private NodoABB<T> construirArbolBalanceado(List<T> elementos, int inicio, int fin) {
+        if (inicio > fin) {
+            return null;
+        }
+
+        // Seleccionar el elemento medio para mantener el balance
+        int medio = (inicio + fin) / 2;
+        NodoABB<T> nodo = new NodoABB<>(elementos.get(medio));
+
+        // Recursivamente construir los subárboles izquierdo y derecho
+        nodo.setIzq(construirArbolBalanceado(elementos, inicio, medio - 1));
+        nodo.setDer(construirArbolBalanceado(elementos, medio + 1, fin));
+
+        return nodo;
+    }
 
     @Override
     public String listarAscendentemente() {
@@ -157,6 +187,7 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
         }
         return borrarMinimoRec(nodo.getIzq());
     }
+
     public String listarPorCategoria(Categoria categoria) {
         StringBuilder resultado = new StringBuilder();
         listarPorCategoriaRec(this.raiz, categoria, resultado);
@@ -165,19 +196,19 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
 
     private void listarPorCategoriaRec(NodoABB nodo, Categoria categoria, StringBuilder resultado) {
         if (nodo != null) {
-                                                                        // Recorrer el subárbol izquierdo
+            // Recorrer el subárbol izquierdo
             listarPorCategoriaRec(nodo.getIzq(), categoria, resultado);
 
-                                                                        // Verificar si el jugador pertenece a la categoría especificada
+            // Verificar si el jugador pertenece a la categoría especificada
             Jugador jugador = (Jugador) nodo.getDato();
             if (categoria.equals(jugador.getCategoria())) {
-                                                                        // Si pertenece a la categoría, agregarlo al resultado con un separador
+                // Si pertenece a la categoría, agregarlo al resultado con un separador
                 if (resultado.length() > 0) {
                     resultado.append("|");                              // Agregar separador entre jugadores
                 }
                 resultado.append(jugador.toString());
             }
-                                                                        // Recorrer el subárbol derecho
+            // Recorrer el subárbol derecho
             listarPorCategoriaRec(nodo.getDer(), categoria, resultado);
         }
     }
