@@ -3,6 +3,9 @@ package dominio.Grafo;
 import dominio.Sucursal;
 import dominio.lista.Lista;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 public class Grafo implements IGrafo {
     private Sucursal[] vertices;
     private Arista[][] matAdy;
@@ -210,5 +213,69 @@ public class Grafo implements IGrafo {
                 dfsRec(i, visitados);
             }
         }
+    }
+    public Lista<Sucursal> dijkstra(String codigoSucursalAnfitriona, int latenciaLimite) {
+        int posInicial = this.obtenerPosVertice(new Sucursal(codigoSucursalAnfitriona, ""));
+        Lista<Sucursal> sucursalesDentroDelLimite = new Lista<>();
+
+        int[] costos = new int[this.cantMaxVertices];
+        boolean[] visitados = new boolean[this.cantMaxVertices];
+
+        for (int i = 0; i < this.cantMaxVertices; i++) {
+            visitados[i] = false;
+            costos[i] = Integer.MAX_VALUE;
+        }
+
+        costos[posInicial] = 0;
+        int posVerticeActualVisitado = posInicial;
+
+        while (posVerticeActualVisitado > -1) {
+            actualizarAdyacentesNoVisitados(posVerticeActualVisitado, costos, visitados, latenciaLimite);
+            posVerticeActualVisitado = obtenerPosVerticeDeCostoMinimoNoVisitado(costos, visitados, latenciaLimite);
+        }
+
+        for (int i = 0; i < costos.length; i++) {
+            if (costos[i] <= latenciaLimite && i != posInicial) {
+                sucursalesDentroDelLimite.insertar(this.vertices[i]);
+            }
+        }
+
+        return sucursalesDentroDelLimite;
+    }
+
+    private void actualizarAdyacentesNoVisitados(int posVertice, int[] costos, boolean[] visitados, int latenciaLimite) {
+        for (int i = 0; i < this.cantMaxVertices; i++) {
+            if (!visitados[i] && this.matAdy[posVertice][i].isExiste()) {
+                int nuevoCosto = costos[posVertice] + this.matAdy[posVertice][i].getLatencia();
+                if (nuevoCosto < costos[i] && nuevoCosto <= latenciaLimite) {
+                    costos[i] = nuevoCosto;
+                }
+            }
+        }
+        visitados[posVertice] = true;
+    }
+
+    private int obtenerPosVerticeDeCostoMinimoNoVisitado(int[] costos, boolean[] visitados, int latenciaLimite) {
+        int minCosto = Integer.MAX_VALUE;
+        int posMin = -1;
+
+        for (int i = 0; i < costos.length; i++) {
+            if (!visitados[i] && costos[i] < minCosto && costos[i] <= latenciaLimite) {
+                minCosto = costos[i];
+                posMin = i;
+            }
+        }
+        return posMin;
+    }
+    public Sucursal[] ordenarSucursalesPorCodigo() {
+        Sucursal[] sucursalesOrdenadas = new Sucursal[cantActualVertices];
+        int index = 0;
+        for (int i = 0; i < cantMaxVertices; i++) {
+            if (vertices[i] != null) {
+                sucursalesOrdenadas[index++] = vertices[i];
+            }
+        }
+        Arrays.sort(sucursalesOrdenadas, Comparator.comparing(Sucursal::getCodigo));
+        return sucursalesOrdenadas;
     }
 }

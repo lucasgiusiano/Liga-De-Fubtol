@@ -29,4 +29,6 @@ public interface IGrafo {
     String esPuntoDeArticulacion(Sucursal s);
 
     boolean dfs(Sucursal v);
+
+    public Lista<Sucursal> dijkstra(String codigoSucursalAnfitriona, int latenciaLimite);
 }

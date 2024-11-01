@@ -8,6 +8,7 @@ import dominio.Grafo.Grafo;
 import dominio.Grafo.IGrafo;
 import dominio.Jugador;
 import dominio.Sucursal;
+import dominio.lista.Lista;
 import interfaz.*;
 
 public class ImplementacionSistema implements Sistema {
@@ -264,6 +265,38 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno sucursalesParaTorneo(String codigoSucursalAnfitriona, int latenciaLimite) {
-        return Retorno.noImplementada();
+        // Validación de los parámetros de entrada
+        if (codigoSucursalAnfitriona == null || codigoSucursalAnfitriona.isEmpty()) {
+            return Retorno.error1("El código de la sucursal anfitriona es vacío o nulo");
+        }
+        if (!sucursales.existeVertice(new Sucursal(codigoSucursalAnfitriona, ""))) {
+            return Retorno.error2("La sucursal anfitriona no existe");
+        }
+        if (latenciaLimite <= 0) {
+            return Retorno.error3("La latencia debe ser mayor a cero");
+        }
+
+        // Utilización del algoritmo de Dijkstra para obtener las sucursales dentro del límite de latencia
+        Lista<Sucursal> sucursalesDentroDelLimite = sucursales.dijkstra(codigoSucursalAnfitriona, latenciaLimite);
+
+        sucursalesDentroDelLimite.ordenarSucursalesPorCodigo();  // Suponiendo que `ordenarPorCodigo()` está implementado en `Lista`
+
+        StringBuilder retornoString = new StringBuilder();
+        int maxLatencia = 0;
+
+        for (Sucursal sucursal : sucursalesDentroDelLimite) {
+            if (retornoString.length() > 0) {
+                retornoString.append("|");
+            }
+            retornoString.append(sucursal.getCodigo()).append(";").append(sucursal.getNombre());
+            maxLatencia = Math.max(maxLatencia, sucursal.getLatencia());
+        }
+
+        // Si no se encontraron sucursales dentro del límite de latencia
+        if (sucursalesDentroDelLimite.esVacia()) {
+            return Retorno.error4("No existen sucursales dentro del límite de latencia");
+        }
+
+        return Retorno.ok(retornoString.toString(), maxLatencia);
     }
 }
