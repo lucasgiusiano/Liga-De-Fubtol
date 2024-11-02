@@ -5,9 +5,8 @@
 package dominio.lista;
 
 /**
- *
- * @author Lucas
  * @param <T>
+ * @author Lucas
  */
 public interface ILista<T> {
 
@@ -22,8 +21,6 @@ public interface ILista<T> {
     public void borrarFin();
 
     public void vaciar();
-
-    public String mostrar();
 
     public boolean estaElemento(T n);
 

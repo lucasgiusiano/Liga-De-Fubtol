@@ -5,20 +5,11 @@ public class Lista<T extends Comparable> implements ILista<T> {
     private Nodo<T> inicio;
     private Nodo<T> fin;
     private int cantElementos;
-    private int cantMaxima;
 
     public Lista() {
         inicio = null;
         fin = null;
         cantElementos = 0;
-        cantMaxima = Integer.MAX_VALUE;
-    }
-
-    public Lista(int cantMax) {
-        inicio = null;
-        fin = null;
-        cantElementos = 0;
-        cantMaxima = cantMax;
     }
 
     @Override
@@ -28,17 +19,15 @@ public class Lista<T extends Comparable> implements ILista<T> {
 
     @Override
     public void agregarInicio(T n) {
+        Nodo<T> nuevo = new Nodo<>(n);
 
-        if (cantElementos < cantMaxima) {
-            Nodo<T> nuevo = new Nodo(n);
+        nuevo.setSiguiente(getInicio());
+        inicio = nuevo;
+        cantElementos++;
 
-            nuevo.setSiguiente(getInicio());
-            inicio = nuevo;
-            cantElementos++;
+        if (cantElementos == 1) {
+            fin = inicio;
 
-            if (cantElementos == 1) {
-                fin = inicio;
-            }
         }
     }
 
@@ -48,12 +37,11 @@ public class Lista<T extends Comparable> implements ILista<T> {
         if (esVacia()) {
             agregarInicio(n);
         } else {
-            if (cantElementos < cantMaxima) {
-                Nodo<T> nuevo = new Nodo<T>(n);
-                fin.setSiguiente(nuevo);
-                fin = nuevo;
-                cantElementos++;
-            }
+            Nodo<T> nuevo = new Nodo<>(n);
+            fin.setSiguiente(nuevo);
+            fin = nuevo;
+            cantElementos++;
+
         }
     }
 
@@ -97,18 +85,6 @@ public class Lista<T extends Comparable> implements ILista<T> {
         inicio = null;
         fin = null;
         cantElementos = 0;
-    }
-
-    @Override
-    public String mostrar() {
-        Nodo<T> aux = getInicio();
-        String lista = "";
-        while (aux != null) {
-
-            lista+=aux.getDato().toString();
-            aux = aux.getSiguiente();
-        }
-        return lista.substring(0,lista.length()-1);
     }
 
     @Override
