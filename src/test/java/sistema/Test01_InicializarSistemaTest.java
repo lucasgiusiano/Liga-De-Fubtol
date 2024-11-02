@@ -109,6 +109,7 @@ public class Test01_InicializarSistemaTest {
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
         assertEquals("Alias;Nombre;Apellido;PROFESIONAL", retorno.getValorString());
     }
+
     @Test
     void deberiaListarJugadoresCorrectamente() {
         Sistema sistema = new ImplementacionSistema();
@@ -121,6 +122,7 @@ public class Test01_InicializarSistemaTest {
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
         assertEquals("Alias1;Nombre1;Apellido1;PROFESIONAL|Alias2;Nombre2;Apellido2;ESTANDARD|", retorno.getValorString());
     }
+
     @Test
     void deberiaListarJugadoresPorCategoriaCorrectamente() {
         Sistema sistema = new ImplementacionSistema();
@@ -397,7 +399,34 @@ public class Test01_InicializarSistemaTest {
         sistema.registrarEquipo("Racing", "Eduardo Espinel");
         sistema.registrarEquipo("River Plate", "Ignacio Ithurralde");
 
-        System.out.println(sistema.listarEquiposDescendente());
+        retorno = sistema.listarEquiposDescendente();
+
+        assertEquals(retorno.getValorString(), "Wanderers;Alejandro Cappuccio;0|River Plate;Ignacio Ithurralde;0|Racing;Eduardo Espinel;0|Progreso;Carlos Canobbio;0|Peñarol;Diego Aguirre;0|Nacional;Diego Testas;0|Miramar Misiones;Leonardo Medina;0|Liverpool;Emiliano Alfaro;0|Fénix;Leonel Rocco;0|Deportivo Maldonado;Joaquín Boghossian;0|Defensor Sporting;Martín Varini;0|Danubio;Alejandro Apud;0|Boston River;Jadson Viera;0|");
+    }
+
+    @Test
+    void SucursalesParaElTorneo() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(6);
+
+        sistema.registrarSucursal("1", "Estadio Centenario");
+        sistema.registrarSucursal("2", "Estadio Campeon del Siglo");
+        sistema.registrarSucursal("3", "Estadio Maracana");
+        sistema.registrarSucursal("4", "Estadio Gran Parque Central");
+        sistema.registrarSucursal("5", "Estadio La Bombonera");
+        sistema.registrarSucursal("6", "Estadio Bernabeu");
+
+        sistema.registrarConexion("1", "6", 100);
+        sistema.registrarConexion("2", "5", 30);
+        sistema.registrarConexion("3", "4", 40);
+        sistema.registrarConexion("1", "2", 50);
+        sistema.registrarConexion("4", "6", 70);
+        sistema.registrarConexion("3", "6", 90);
+        sistema.registrarConexion("1", "4", 10);
+
+        retorno = sistema.sucursalesParaTorneo("1", 90);
+
+        assertEquals(retorno.getValorString(), "2;Estadio Campeon del Siglo|4;Estadio Gran Parque Central|5;Estadio La Bombonera|6;Estadio Bernabeu");
     }
 
 }

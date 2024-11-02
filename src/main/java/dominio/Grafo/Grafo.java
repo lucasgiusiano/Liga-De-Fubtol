@@ -3,9 +3,6 @@ package dominio.Grafo;
 import dominio.Sucursal;
 import dominio.lista.Lista;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
 public class Grafo implements IGrafo {
     private Sucursal[] vertices;
     private Arista[][] matAdy;
@@ -65,7 +62,7 @@ public class Grafo implements IGrafo {
 
     private int obtenerPosVertice(Sucursal v) {
         for (int i = 0; i < this.cantMaxVertices; i++) {
-            if (this.vertices[i].equals(v)) {
+            if (this.vertices[i] != null && this.vertices[i].equals(v)) {
                 return i;
             }
         }
@@ -162,7 +159,7 @@ public class Grafo implements IGrafo {
         int posVert = this.obtenerPosVertice(v);
         for (int i = 0; i < this.cantMaxVertices; i++) {
             if (this.matAdy[posVert][i].isExiste()) {
-                adyacentes.insertar(this.vertices[i]);
+                adyacentes.agregarFinal(this.vertices[i]);
             }
         }
         return adyacentes;
@@ -216,7 +213,7 @@ public class Grafo implements IGrafo {
     }
     public Lista<Sucursal> dijkstra(String codigoSucursalAnfitriona, int latenciaLimite) {
         int posInicial = this.obtenerPosVertice(new Sucursal(codigoSucursalAnfitriona, ""));
-        Lista<Sucursal> sucursalesDentroDelLimite = new Lista<>();
+        Lista<Sucursal> sucursalesDentroDelLimite = new Lista<Sucursal>();
 
         int[] costos = new int[this.cantMaxVertices];
         boolean[] visitados = new boolean[this.cantMaxVertices];
@@ -236,7 +233,7 @@ public class Grafo implements IGrafo {
 
         for (int i = 0; i < costos.length; i++) {
             if (costos[i] <= latenciaLimite && i != posInicial) {
-                sucursalesDentroDelLimite.insertar(this.vertices[i]);
+                sucursalesDentroDelLimite.agregarOrd(this.vertices[i]);
             }
         }
 
@@ -266,16 +263,5 @@ public class Grafo implements IGrafo {
             }
         }
         return posMin;
-    }
-    public Sucursal[] ordenarSucursalesPorCodigo() {
-        Sucursal[] sucursalesOrdenadas = new Sucursal[cantActualVertices];
-        int index = 0;
-        for (int i = 0; i < cantMaxVertices; i++) {
-            if (vertices[i] != null) {
-                sucursalesOrdenadas[index++] = vertices[i];
-            }
-        }
-        Arrays.sort(sucursalesOrdenadas, Comparator.comparing(Sucursal::getCodigo));
-        return sucursalesOrdenadas;
     }
 }

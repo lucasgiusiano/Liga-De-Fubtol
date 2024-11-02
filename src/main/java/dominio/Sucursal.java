@@ -2,7 +2,7 @@ package dominio;
 
 import java.util.Objects;
 
-public class Sucursal {
+public class Sucursal implements Comparable<Sucursal> {
     private String codigo;
     private String nombre;
     private int latencia; // Nuevo atributo
@@ -42,5 +42,10 @@ public class Sucursal {
         if (this == o) return true;
         if (!(o instanceof Sucursal sucursal)) return false;
         return Objects.equals(codigo, sucursal.codigo);
+    }
+
+    @Override
+    public int compareTo(Sucursal other) {
+        return this.codigo.compareTo(other.getCodigo());
     }
 }

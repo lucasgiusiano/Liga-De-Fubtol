@@ -1,22 +1,37 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
+ */
 package dominio.lista;
 
+/**
+ *
+ * @author Lucas
+ * @param <T>
+ */
 public interface ILista<T> {
-    //realizamos un insertar al inicio
-    public void insertar(T dato);
 
-    public boolean existe(T dato);
+    public boolean esVacia();
 
-    public T recuperar(T dato);
+    public void agregarInicio(T n);
 
-    public void eliminar(T dato);
+    public void agregarFinal(T n);
 
-    public T recuperar(int indice);
+    public void borrarInicio();
 
-    public void eliminar(int indice);
+    public void borrarFin();
 
-    public int largo();
+    public void vaciar();
 
-    public void mostrarIter();
+    public String mostrar();
 
-    public void mostrarRec();
+    public boolean estaElemento(T n);
+
+    public int cantElementos();
+
+    public Nodo<T> obtenerElemento(T n);
+
+    public void borrarElemento(T n);
+
+    public void agregarOrd(T n);
 }
