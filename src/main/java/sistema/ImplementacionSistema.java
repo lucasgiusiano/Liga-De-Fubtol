@@ -198,16 +198,13 @@ public class ImplementacionSistema implements Sistema {
         Sucursal sucursal2 = new Sucursal(codigoSucursal2, "");
 
         if (latencia < 0) {
-            retorno = Retorno.error1("La latencia debe ser mayor o igual que cero");
-        }
-        if (codigoSucursal1.isEmpty() || codigoSucursal1 == null || codigoSucursal2.isEmpty() || codigoSucursal2 == null) {
-            retorno = Retorno.error2("Alguno de los parámetros fue vacío o nulo");
-        }
-        if (!sucursales.existeVertice(sucursal1) || !sucursales.existeVertice(sucursal2)) {
-            retorno = Retorno.error3("Alguna de las sucursales indicadas, no existe");
-        }
-        if (sucursales.sonAdyacentes(sucursal1, sucursal2)) {
-            retorno = Retorno.error4("Ya existe una conexion entre las dos sucursales");
+            return Retorno.error1("La latencia debe ser mayor o igual que cero");
+        } else if (codigoSucursal1.isEmpty() || codigoSucursal1 == null || codigoSucursal2.isEmpty() || codigoSucursal2 == null) {
+            return Retorno.error2("Alguno de los parámetros fue vacío o nulo");
+        } else if (!sucursales.existeVertice(sucursal1) || !sucursales.existeVertice(sucursal2)) {
+            return Retorno.error3("Alguna de las sucursales indicadas, no existe");
+        } else if (sucursales.sonAdyacentes(sucursal1, sucursal2)) {
+            return Retorno.error4("Ya existe una conexion entre las dos sucursales");
         }
 
         Sucursal s1 = sucursales.buscarVertice(sucursal1);
@@ -222,22 +219,25 @@ public class ImplementacionSistema implements Sistema {
     public Retorno actualizarConexion(String codigoSucursal1, String codigoSucursal2, int latencia) {
         Retorno retorno = Retorno.ok();
 
-        Sucursal sucursal1 = new Sucursal(codigoSucursal1, "");
-        Sucursal sucursal2 = new Sucursal(codigoSucursal2, "");
-
-        if (latencia < 0) {
-            retorno = Retorno.error1("La latencia debe ser mayor o igual que cero");
-        } else if (codigoSucursal1.isEmpty() || codigoSucursal1 == null || codigoSucursal2.isEmpty() || codigoSucursal2 == null) {
+        // Verifica si alguno de los parámetros es null o vacío
+        if (codigoSucursal1 == null || codigoSucursal2 == null || codigoSucursal1.isEmpty() || codigoSucursal2.isEmpty()) {
             retorno = Retorno.error2("Alguno de los parámetros fue vacío o nulo");
-        } else if (!sucursales.existeVertice(sucursal1) || !sucursales.existeVertice(sucursal2)) {
-            retorno = Retorno.error3("Alguna de las sucursales indicadas, no existe");
-        } else if (!sucursales.sonAdyacentes(sucursal1, sucursal2)) {
-            retorno = Retorno.error4("Ya existe una conexion entre las dos sucursales");
+        } else if (latencia < 0) {
+            retorno = Retorno.error1("La latencia debe ser mayor o igual que cero");
         } else {
-            Sucursal s1 = sucursales.buscarVertice(sucursal1);
-            Sucursal s2 = sucursales.buscarVertice(sucursal2);
+            Sucursal sucursal1 = new Sucursal(codigoSucursal1, "");
+            Sucursal sucursal2 = new Sucursal(codigoSucursal2, "");
 
-            sucursales.actualizarArista(sucursal1, sucursal2, latencia);
+            if (!sucursales.existeVertice(sucursal1) || !sucursales.existeVertice(sucursal2)) {
+                retorno = Retorno.error3("Alguna de las sucursales indicadas, no existe");
+            } else if (!sucursales.sonAdyacentes(sucursal1, sucursal2)) {
+                retorno = Retorno.error4("Ya existe una conexion entre las dos sucursales");
+            } else {
+                Sucursal s1 = sucursales.buscarVertice(sucursal1);
+                Sucursal s2 = sucursales.buscarVertice(sucursal2);
+
+                sucursales.actualizarArista(sucursal1, sucursal2, latencia);
+            }
         }
 
         return retorno;
@@ -247,15 +247,21 @@ public class ImplementacionSistema implements Sistema {
     public Retorno analizarSucursal(String codigoSucursal) {
         Retorno retorno = Retorno.ok();
 
+        if (codigoSucursal == null || codigoSucursal.isEmpty()) {
+            retorno = Retorno.error1("El código de la sucursal fue nulo o vacío");
+            return retorno;
+        }
+
         Sucursal sAux = new Sucursal(codigoSucursal, "");
 
-        if (codigoSucursal.isEmpty() || codigoSucursal == null) {
-            retorno = Retorno.error1("El codigo de la sucursal fue nulo o vacio");
-        } else if (sucursales.existeVertice(sAux)) {
+        if (!sucursales.existeVertice(sAux)) {
             retorno = Retorno.error2("No existe la sucursal");
-        } else {
-            retorno = Retorno.ok(sucursales.esPuntoDeArticulacion(sAux));
+            return retorno;
         }
+
+
+        String esCritica = sucursales.esPuntoDeArticulacion(sAux);
+        retorno = Retorno.ok(esCritica);
 
         return retorno;
     }

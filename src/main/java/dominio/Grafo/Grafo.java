@@ -169,6 +169,7 @@ public class Grafo implements IGrafo {
     public boolean sonAdyacentes(Sucursal v1, Sucursal v2) {
         int posOrigen = this.obtenerPosVertice(v1);
         int posDestino = this.obtenerPosVertice(v2);
+
         return this.matAdy[posOrigen][posDestino].isExiste();
     }
 
