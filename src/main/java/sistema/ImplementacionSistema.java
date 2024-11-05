@@ -7,6 +7,7 @@ import dominio.Grafo.Arista;
 import dominio.Grafo.Grafo;
 import dominio.Grafo.IGrafo;
 import dominio.Jugador;
+import dominio.RetornoDTO;
 import dominio.Sucursal;
 import dominio.lista.Lista;
 import dominio.lista.Nodo;
@@ -41,11 +42,12 @@ public class ImplementacionSistema implements Sistema {
         Jugador j = new Jugador(alias, nombre, apellido, categoria);
         if (!j.esValido()) {
             return Retorno.error1("Algun dato ingresado es null o vacio");
-        }
-        if (jugadores.existe(j)) {
+        } else if (jugadores.existe(j)) {
             return Retorno.error2("Jugador ya existe");
+        } else {
+            jugadores.insertar(j);
         }
-        jugadores.insertar(j);
+
 
         return Retorno.ok();
     }
@@ -57,14 +59,17 @@ public class ImplementacionSistema implements Sistema {
             return Retorno.error1("Alias es vacío o null");
         }
 
-        Jugador jugadorEncontrado = this.jugadores.buscar(new Jugador(alias));
+        RetornoDTO dto = this.jugadores.buscar(new Jugador(alias));
+        Jugador jugadorEncontrado = (Jugador) dto.getDato();
+        int recorridosHechos = dto.getRecorridos();
 
         if (jugadorEncontrado == null) {
             return Retorno.error2("No existe un jugador registrado con ese alias");
         }
         String resultado = jugadorEncontrado.getAlias() + ";" + jugadorEncontrado.getNombre() + ";" +
                 jugadorEncontrado.getApellido() + ";" + jugadorEncontrado.getCategoria();
-        return Retorno.ok(resultado);
+
+        return Retorno.ok(recorridosHechos, resultado);
     }
 
 
@@ -72,20 +77,12 @@ public class ImplementacionSistema implements Sistema {
     public Retorno listarJugadoresAscendente() {
         String resultado = this.jugadores.listarAscendentemente();
 
-        if (resultado.isEmpty()) {
-            return Retorno.ok("No hay jugadores registrados.");
-        }
         return Retorno.ok(resultado);
     }
 
     @Override
     public Retorno listarJugadoresPorCategoria(Categoria unaCategoria) {
-        String resultado = this.jugadores.listarPorCategoria(unaCategoria);
-
-        if (resultado.isEmpty()) {
-            return Retorno.ok("No hay jugadores registrados en esa categoría.");
-        }
-        return Retorno.ok(resultado);
+        return Retorno.ok(this.jugadores.listarPorCategoria(unaCategoria));
     }
 
     @Override
@@ -110,8 +107,11 @@ public class ImplementacionSistema implements Sistema {
     public Retorno agregarJugadorAEquipo(String nombreEquipo, String aliasJugador) {
         Retorno retorno = null;
 
-        Jugador jugador = jugadores.buscar(new Jugador(aliasJugador));
-        Equipo equipo = equipos.buscar(new Equipo(nombreEquipo));
+        RetornoDTO dtoJugador = jugadores.buscar(new Jugador(aliasJugador));
+        Jugador jugador = (Jugador) dtoJugador.getDato();
+
+        RetornoDTO dtoEquipo = equipos.buscar(new Equipo(nombreEquipo));
+        Equipo equipo = (Equipo) dtoEquipo.getDato();
 
         if (nombreEquipo == null || nombreEquipo.equals("") || aliasJugador == null || aliasJugador.equals("")) {
             retorno = Retorno.error1("Los campos ingresados fueron nulos o vacíos");
@@ -152,9 +152,11 @@ public class ImplementacionSistema implements Sistema {
     @Override
     public Retorno listarJugadoresDeEquipo(String nombreEquipo) {
         Retorno retorno = null;
-        Equipo equipo = equipos.buscar(new Equipo(nombreEquipo));
 
-        if (nombreEquipo.equals(null) || nombreEquipo.equals("")) {
+        RetornoDTO dto = equipos.buscar(new Equipo(nombreEquipo));
+        Equipo equipo = (Equipo) dto.getDato();
+
+        if (nombreEquipo == null || nombreEquipo.isEmpty()) {
             retorno = Retorno.error1("El nombre del equipo fue nulo o vacío");
         } else if (equipo == null) {
             retorno = Retorno.error2("El equipo no existe");
@@ -199,7 +201,7 @@ public class ImplementacionSistema implements Sistema {
 
         if (latencia < 0) {
             return Retorno.error1("La latencia debe ser mayor o igual que cero");
-        } else if (codigoSucursal1.isEmpty() || codigoSucursal1 == null || codigoSucursal2.isEmpty() || codigoSucursal2 == null) {
+        } else if (codigoSucursal1 == null || codigoSucursal1.isEmpty() || codigoSucursal2 == null || codigoSucursal2.isEmpty()) {
             return Retorno.error2("Alguno de los parámetros fue vacío o nulo");
         } else if (!sucursales.existeVertice(sucursal1) || !sucursales.existeVertice(sucursal2)) {
             return Retorno.error3("Alguna de las sucursales indicadas, no existe");
@@ -290,7 +292,7 @@ public class ImplementacionSistema implements Sistema {
         return Retorno.ok(formarStringSucursalesEnLatencia(sucursalesDentroDelLimite));
     }
 
-    private String formarStringSucursalesEnLatencia(Lista<Sucursal> sucursalesDentroDelLimite){
+    private String formarStringSucursalesEnLatencia(Lista<Sucursal> sucursalesDentroDelLimite) {
         StringBuilder retornoString = new StringBuilder();
 
         Nodo<Sucursal> nodoSucursal = sucursalesDentroDelLimite.getInicio();

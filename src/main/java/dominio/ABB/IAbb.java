@@ -1,5 +1,7 @@
 package dominio.ABB;
 
+import dominio.RetornoDTO;
+
 import java.util.List;
 
 public interface IAbb<T extends Comparable<T>> {
@@ -12,7 +14,7 @@ public interface IAbb<T extends Comparable<T>> {
 
     public boolean existe(T dato);
 
-    public T buscar(T dato);
+    public RetornoDTO buscar(T dato);
 
     public T borrarMinimo();
 

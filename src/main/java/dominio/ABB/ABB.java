@@ -1,6 +1,7 @@
 package dominio.ABB;
 
 import dominio.Jugador;
+import dominio.RetornoDTO;
 import interfaz.Categoria;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
         } else {
             insertarRec(this.raiz, dato);
         }
-        balancear();
+        //balancear();
     }
 
     private void insertarRec(NodoABB nodo, T dato) {
@@ -72,7 +73,7 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
             obtenerElementosEnOrden(nodo.getDer(), elementos); // Subárbol derecho
         }
     }
-    
+
     private NodoABB<T> construirArbolBalanceado(List<T> elementos, int inicio, int fin) {
         if (inicio > fin) {
             return null;
@@ -91,43 +92,48 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
 
     @Override
     public String listarAscendentemente() {
-        if (this.raiz != null) {
-            return listarAscendentementeRec(this.raiz, "");
-        } else {
-            return "ERROR: El Arbol está vacío";
+        StringBuilder resultado = new StringBuilder();
+        listarAscendentementeRec(this.raiz, resultado);
+
+        // Eliminar el último "|" si existe
+        if (!resultado.isEmpty() && resultado.charAt(resultado.length() - 1) == '|') {
+            resultado.deleteCharAt(resultado.length() - 1);
         }
+
+        return resultado.toString();
     }
 
-    private String listarAscendentementeRec(NodoABB nodo, String resultado) {
+    private void listarAscendentementeRec(NodoABB nodo, StringBuilder resultado) {
         if (nodo != null) {
+            listarAscendentementeRec(nodo.getIzq(), resultado);
 
-            resultado = listarAscendentementeRec(nodo.getIzq(), resultado);
+            resultado.append(nodo.getDato().toString()).append("|");
 
-            resultado += nodo.getDato().toString() + "|";
-
-            resultado = listarAscendentementeRec(nodo.getDer(), resultado);
+            listarAscendentementeRec(nodo.getDer(), resultado);
         }
-        return resultado;
     }
 
     @Override
     public String listarDescendentemente() {
-        if (this.raiz != null) {
-            return listarDescendentementeRec(this.raiz, "");
-        } else {
-            return "ERROR: El Arbol está vacío";
+        StringBuilder resultado = new StringBuilder();
+        listarDescendentementeRec(this.raiz, resultado);
+
+        // Eliminar el último "|" si existe
+        if (!resultado.isEmpty() && resultado.charAt(resultado.length() - 1) == '|') {
+            resultado.deleteCharAt(resultado.length() - 1);
         }
+
+        return resultado.toString();
     }
 
-    private String listarDescendentementeRec(NodoABB nodo, String resultado) {
+    private void listarDescendentementeRec(NodoABB nodo, StringBuilder resultado) {
         if (nodo != null) {
-            resultado = listarDescendentementeRec(nodo.getDer(), resultado);
+            listarDescendentementeRec(nodo.getDer(), resultado);
 
-            resultado += nodo.getDato().toString() + "|";
+            resultado.append(nodo.getDato().toString()).append("|");
 
-            resultado = listarDescendentementeRec(nodo.getIzq(), resultado);
+            listarDescendentementeRec(nodo.getIzq(), resultado);
         }
-        return resultado;
     }
 
     @Override
@@ -149,23 +155,23 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
     }
 
     @Override
-    public T buscar(T dato) {
-        return buscarRec(this.raiz, dato);
+    public RetornoDTO buscar(T dato) {
+        return buscarRec(this.raiz, dato, 0);
     }
 
-    private T buscarRec(NodoABB nodo, T dato) {
+    private RetornoDTO buscarRec(NodoABB nodo, T dato, int recorridos) {
         if (nodo != null) {
             if (dato.equals(nodo.getDato())) {
-                return (T) nodo.getDato();  // No es necesario el casting
+
+                return new RetornoDTO(nodo.getDato(), recorridos + 1);  // No es necesario el casting
             } else if (dato.compareTo((T) nodo.getDato()) > 0) {
-                return buscarRec(nodo.getDer(), dato);
+                return buscarRec(nodo.getDer(), dato, recorridos + 1);
             } else {
-                return buscarRec(nodo.getIzq(), dato);
+                return buscarRec(nodo.getIzq(), dato, recorridos + 1);
             }
         }
-        return null;
+        return new RetornoDTO(null, 0);
     }
-
 
     @Override
     public T borrarMinimo() {

@@ -52,11 +52,20 @@ public class Equipo implements Comparable<Equipo> {
 
     @Override
     public int compareTo(Equipo o) {
+        if (this.nombre == null && o.getNombre() == null) {
+            return 0;
+        } else if (this.nombre == null) {
+            return -1;
+        } else if (o.getNombre() == null) {
+            return 1;
+        }
+
         return this.nombre.compareTo(o.getNombre());
     }
 
+
     public boolean esValido() {
-        return !nombre.equals("") && !nombre.equals(null) && !manager.equals("") && !manager.equals(null);
+        return nombre != null && !nombre.isEmpty() && manager != null && !manager.isEmpty();
     }
 
     public int getCantidadJugadores() {

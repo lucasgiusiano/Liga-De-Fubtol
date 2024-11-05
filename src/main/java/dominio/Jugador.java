@@ -78,6 +78,13 @@ public class Jugador implements Comparable<Jugador> {
 
     @Override
     public int compareTo(Jugador o) {
+        if (this.alias == null && o.alias == null) {
+            return 0;
+        } else if (this.alias == null) {
+            return -1;
+        } else if (o.alias == null) {
+            return 1;
+        }
         return this.alias.compareTo(o.alias);
     }
 

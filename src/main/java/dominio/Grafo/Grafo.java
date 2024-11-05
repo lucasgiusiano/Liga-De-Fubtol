@@ -10,7 +10,7 @@ public class Grafo implements IGrafo {
     private int cantActualVertices;
     private boolean esDirigido;
 
-    public boolean isFull(){
+    public boolean isFull() {
         return cantMaxVertices == cantActualVertices;
     }
 
@@ -85,9 +85,8 @@ public class Grafo implements IGrafo {
         int posOrigen = this.obtenerPosVertice(vOrigen);
         int posDestino = this.obtenerPosVertice(vDestino);
         if (posOrigen >= 0 && posDestino >= 0) {
-            this.matAdy[posOrigen][posDestino].setExiste(true);
-            this.matAdy[posOrigen][posDestino].setLatencia(peso);
-            //            this.matAdy[posOrigen][posDestino]=new Arista(peso);
+            this.matAdy[posOrigen][posDestino] = new Arista(peso);
+            this.matAdy[posDestino][posOrigen] = new Arista(peso);
             if (!this.esDirigido) {
                 this.matAdy[posDestino][posOrigen].setExiste(true);
                 this.matAdy[posDestino][posOrigen].setLatencia(peso);
@@ -179,7 +178,7 @@ public class Grafo implements IGrafo {
     }
 
     @Override
-    public Sucursal buscarVertice(Sucursal v){
+    public Sucursal buscarVertice(Sucursal v) {
         return vertices[this.obtenerPosVertice(v)];
     }
 
@@ -187,9 +186,9 @@ public class Grafo implements IGrafo {
     public String esPuntoDeArticulacion(Sucursal s) {
         String retorno = "";
 
-        if (dfs(s)){
+        if (dfs(s)) {
             retorno = "SI";
-        }else{
+        } else {
             retorno = "NO";
         }
 
@@ -212,6 +211,7 @@ public class Grafo implements IGrafo {
             }
         }
     }
+
     public Lista<Sucursal> dijkstra(String codigoSucursalAnfitriona, int latenciaLimite) {
         int posInicial = this.obtenerPosVertice(new Sucursal(codigoSucursalAnfitriona, ""));
         Lista<Sucursal> sucursalesDentroDelLimite = new Lista<Sucursal>();
