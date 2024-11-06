@@ -2,11 +2,11 @@ package dominio;
 
 public class RetornoDTO {
     Object dato;
-    int recorridos;
+    int valorEntero;
 
     public RetornoDTO(Object dato, int recorridos) {
         this.dato = dato;
-        this.recorridos = recorridos;
+        this.valorEntero = recorridos;
     }
 
     public Object getDato() {
@@ -17,11 +17,11 @@ public class RetornoDTO {
         this.dato = dato;
     }
 
-    public int getRecorridos() {
-        return recorridos;
+    public int getValorEntero() {
+        return valorEntero;
     }
 
-    public void setRecorridos(int recorridos) {
-        this.recorridos = recorridos;
+    public void setValorEntero(int valorEntero) {
+        this.valorEntero = valorEntero;
     }
 }

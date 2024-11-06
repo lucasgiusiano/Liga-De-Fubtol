@@ -1,7 +1,11 @@
 package dominio.Grafo;
 
+import dominio.RetornoDTO;
 import dominio.Sucursal;
 import dominio.lista.Lista;
+
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Grafo implements IGrafo {
     private Sucursal[] vertices;
@@ -196,25 +200,54 @@ public class Grafo implements IGrafo {
     }
 
     @Override
-    public boolean dfs(Sucursal v) {
+    public boolean dfs(Sucursal s) {
+        int pos = this.obtenerPosVertice(s);
         boolean[] visitados = new boolean[this.cantMaxVertices];
-        int pos = this.obtenerPosVertice(v);
-        dfsRec(pos, visitados);
-        return visitados[pos];
+        int[] descubrimiento = new int[this.cantMaxVertices];
+        int[] low = new int[this.cantMaxVertices];
+        int[] padre = new int[this.cantMaxVertices];
+        Arrays.fill(padre, -1);  // Inicializar todos los padres como -1
+        boolean[] esArticulacion = new boolean[this.cantMaxVertices];
+        AtomicInteger tiempo = new AtomicInteger(0);  // Usar AtomicInteger para que el tiempo sea mutable
+
+        dfsRec(pos, visitados, descubrimiento, low, padre, esArticulacion, tiempo);
+
+        return esArticulacion[pos];
     }
 
-    private void dfsRec(int pos, boolean[] visitados) {
+    private void dfsRec(int pos, boolean[] visitados, int[] descubrimiento, int[] low, int[] padre, boolean[] esArticulacion, AtomicInteger tiempo) {
         visitados[pos] = true;
+        descubrimiento[pos] = low[pos] = tiempo.incrementAndGet();  // Incrementa y asigna el tiempo
+        int hijos = 0;
+
         for (int i = 0; i < this.cantMaxVertices; i++) {
-            if (this.matAdy[pos][i].isExiste() && !visitados[i]) {
-                dfsRec(i, visitados);
+            if (this.matAdy[pos][i].isExiste()) {
+                if (!visitados[i]) { // Si no ha sido visitado
+                    padre[i] = pos;
+                    hijos++;
+                    dfsRec(i, visitados, descubrimiento, low, padre, esArticulacion, tiempo);
+
+                    // Verifica la condición para ser punto de articulación
+                    low[pos] = Math.min(low[pos], low[i]);
+
+                    if (padre[pos] == -1 && hijos > 1) {
+                        esArticulacion[pos] = true;
+                    }
+                    if (padre[pos] != -1 && low[i] >= descubrimiento[pos]) {
+                        esArticulacion[pos] = true;
+                    }
+                } else if (i != padre[pos]) { // Actualiza low si el nodo ha sido visitado y no es el padre
+                    low[pos] = Math.min(low[pos], descubrimiento[i]);
+                }
             }
         }
     }
 
-    public Lista<Sucursal> dijkstra(String codigoSucursalAnfitriona, int latenciaLimite) {
+
+    public RetornoDTO dijkstra(String codigoSucursalAnfitriona, int latenciaLimite) {
         int posInicial = this.obtenerPosVertice(new Sucursal(codigoSucursalAnfitriona, ""));
         Lista<Sucursal> sucursalesDentroDelLimite = new Lista<Sucursal>();
+        int maximaLatenciaAlcanzada = 0;
 
         int[] costos = new int[this.cantMaxVertices];
         boolean[] visitados = new boolean[this.cantMaxVertices];
@@ -232,13 +265,18 @@ public class Grafo implements IGrafo {
             posVerticeActualVisitado = obtenerPosVerticeDeCostoMinimoNoVisitado(costos, visitados, latenciaLimite);
         }
 
+        sucursalesDentroDelLimite.agregarOrd(this.vertices[posInicial]);
+
         for (int i = 0; i < costos.length; i++) {
             if (costos[i] <= latenciaLimite && i != posInicial) {
+                if (costos[i] > maximaLatenciaAlcanzada) {
+                    maximaLatenciaAlcanzada = costos[i];
+                }
                 sucursalesDentroDelLimite.agregarOrd(this.vertices[i]);
             }
         }
 
-        return sucursalesDentroDelLimite;
+        return new RetornoDTO(sucursalesDentroDelLimite, maximaLatenciaAlcanzada);
     }
 
     private void actualizarAdyacentesNoVisitados(int posVertice, int[] costos, boolean[] visitados, int latenciaLimite) {

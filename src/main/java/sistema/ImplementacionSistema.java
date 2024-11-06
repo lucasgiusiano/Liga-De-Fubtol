@@ -5,15 +5,12 @@ import dominio.ABB.NodoABB;
 import dominio.Equipo;
 import dominio.Grafo.Arista;
 import dominio.Grafo.Grafo;
-import dominio.Grafo.IGrafo;
 import dominio.Jugador;
 import dominio.RetornoDTO;
 import dominio.Sucursal;
 import dominio.lista.Lista;
 import dominio.lista.Nodo;
 import interfaz.*;
-
-import java.sql.SQLOutput;
 
 public class ImplementacionSistema implements Sistema {
     public ABB<Jugador> jugadores;
@@ -61,7 +58,7 @@ public class ImplementacionSistema implements Sistema {
 
         RetornoDTO dto = this.jugadores.buscar(new Jugador(alias));
         Jugador jugadorEncontrado = (Jugador) dto.getDato();
-        int recorridosHechos = dto.getRecorridos();
+        int recorridosHechos = dto.getValorEntero();
 
         if (jugadorEncontrado == null) {
             return Retorno.error2("No existe un jugador registrado con ese alias");
@@ -247,30 +244,22 @@ public class ImplementacionSistema implements Sistema {
 
     @Override
     public Retorno analizarSucursal(String codigoSucursal) {
-        Retorno retorno = Retorno.ok();
 
         if (codigoSucursal == null || codigoSucursal.isEmpty()) {
-            retorno = Retorno.error1("El código de la sucursal fue nulo o vacío");
-            return retorno;
+            return Retorno.error1("El código de la sucursal fue nulo o vacío");
         }
 
         Sucursal sAux = new Sucursal(codigoSucursal, "");
 
         if (!sucursales.existeVertice(sAux)) {
-            retorno = Retorno.error2("No existe la sucursal");
-            return retorno;
+            return Retorno.error2("No existe la sucursal");
         }
-
-
-        String esCritica = sucursales.esPuntoDeArticulacion(sAux);
-        retorno = Retorno.ok(esCritica);
-
-        return retorno;
+        return Retorno.ok(sucursales.esPuntoDeArticulacion(sAux));
     }
 
     @Override
     public Retorno sucursalesParaTorneo(String codigoSucursalAnfitriona, int latenciaLimite) {
-        // Validación de los parámetros de entrada
+
         if (codigoSucursalAnfitriona == null || codigoSucursalAnfitriona.isEmpty()) {
             return Retorno.error1("El código de la sucursal anfitriona es vacío o nulo");
         }
@@ -282,34 +271,36 @@ public class ImplementacionSistema implements Sistema {
         }
 
         // Utilización del algoritmo de Dijkstra para obtener las sucursales dentro del límite de latencia
-        Lista<Sucursal> sucursalesDentroDelLimite = sucursales.dijkstra(codigoSucursalAnfitriona, latenciaLimite);
+        RetornoDTO dtoSucursales = sucursales.dijkstra(codigoSucursalAnfitriona, latenciaLimite);
+        Lista<Sucursal> sucursalesDentroDelLimite = (Lista<Sucursal>) dtoSucursales.getDato();
+
 
         // Si no se encontraron sucursales dentro del límite de latencia
         if (sucursalesDentroDelLimite.esVacia()) {
             return Retorno.error4("No existen sucursales dentro del límite de latencia");
         }
 
-        return Retorno.ok(formarStringSucursalesEnLatencia(sucursalesDentroDelLimite));
+        return Retorno.ok(dtoSucursales.getValorEntero(), formarStringSucursalesEnLatencia(sucursalesDentroDelLimite));
     }
 
     private String formarStringSucursalesEnLatencia(Lista<Sucursal> sucursalesDentroDelLimite) {
-        StringBuilder retornoString = new StringBuilder();
+        String retornoString = "";
 
         Nodo<Sucursal> nodoSucursal = sucursalesDentroDelLimite.getInicio();
         for (int i = 0; i < sucursalesDentroDelLimite.cantElementos(); i++) {
-            if (retornoString.length() > 0) {
-                retornoString.append("|");
+            if (!retornoString.isEmpty()) {
+                retornoString += "|";
             }
 
             Sucursal sucursalActual = nodoSucursal.getDato();
 
-            retornoString.append(sucursalActual.getCodigo()).append(";").append(sucursalActual.getNombre());
+            retornoString += sucursalActual.getCodigo() + ";" + sucursalActual.getNombre();
 
             if (nodoSucursal.getSiguiente() != null) {
                 nodoSucursal = nodoSucursal.getSiguiente();
             }
         }
 
-        return retornoString.toString();
+        return retornoString;
     }
 }

@@ -79,11 +79,9 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
             return null;
         }
 
-        // Seleccionar el elemento medio para mantener el balance
         int medio = (inicio + fin) / 2;
         NodoABB<T> nodo = new NodoABB<>(elementos.get(medio));
 
-        // Recursivamente construir los subárboles izquierdo y derecho
         nodo.setIzq(construirArbolBalanceado(elementos, inicio, medio - 1));
         nodo.setDer(construirArbolBalanceado(elementos, medio + 1, fin));
 
@@ -92,49 +90,44 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
 
     @Override
     public String listarAscendentemente() {
-        StringBuilder resultado = new StringBuilder();
-        listarAscendentementeRec(this.raiz, resultado);
+        String resultado = listarAscendentementeRec(this.raiz, "");
 
-        // Eliminar el último "|" si existe
-        if (!resultado.isEmpty() && resultado.charAt(resultado.length() - 1) == '|') {
-            resultado.deleteCharAt(resultado.length() - 1);
+        if (!resultado.isEmpty() && resultado.endsWith("|")) {
+            resultado = resultado.substring(0, resultado.length() - 1);
         }
 
-        return resultado.toString();
+        return resultado;
     }
 
-    private void listarAscendentementeRec(NodoABB nodo, StringBuilder resultado) {
+    private String listarAscendentementeRec(NodoABB nodo, String resultado) {
         if (nodo != null) {
-            listarAscendentementeRec(nodo.getIzq(), resultado);
-
-            resultado.append(nodo.getDato().toString()).append("|");
-
-            listarAscendentementeRec(nodo.getDer(), resultado);
+            resultado = listarAscendentementeRec(nodo.getIzq(), resultado);
+            resultado += nodo.getDato().toString() + "|";
+            resultado = listarAscendentementeRec(nodo.getDer(), resultado);
         }
+        return resultado;
     }
 
     @Override
     public String listarDescendentemente() {
-        StringBuilder resultado = new StringBuilder();
-        listarDescendentementeRec(this.raiz, resultado);
+        String resultado = listarDescendentementeRec(this.raiz, "");
 
-        // Eliminar el último "|" si existe
-        if (!resultado.isEmpty() && resultado.charAt(resultado.length() - 1) == '|') {
-            resultado.deleteCharAt(resultado.length() - 1);
+        if (!resultado.isEmpty() && resultado.endsWith("|")) {
+            resultado = resultado.substring(0, resultado.length() - 1);
         }
 
-        return resultado.toString();
+        return resultado;
     }
 
-    private void listarDescendentementeRec(NodoABB nodo, StringBuilder resultado) {
+    private String listarDescendentementeRec(NodoABB nodo, String resultado) {
         if (nodo != null) {
-            listarDescendentementeRec(nodo.getDer(), resultado);
-
-            resultado.append(nodo.getDato().toString()).append("|");
-
-            listarDescendentementeRec(nodo.getIzq(), resultado);
+            resultado = listarDescendentementeRec(nodo.getDer(), resultado);
+            resultado += nodo.getDato().toString() + "|";
+            resultado = listarDescendentementeRec(nodo.getIzq(), resultado);
         }
+        return resultado;
     }
+
 
     @Override
     public boolean existe(T dato) {
@@ -195,28 +188,24 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
     }
 
     public String listarPorCategoria(Categoria categoria) {
-        StringBuilder resultado = new StringBuilder();
-        listarPorCategoriaRec(this.raiz, categoria, resultado);
-        return resultado.toString();
+        return listarPorCategoriaRec(this.raiz, categoria, "");
     }
 
-    private void listarPorCategoriaRec(NodoABB nodo, Categoria categoria, StringBuilder resultado) {
+    private String listarPorCategoriaRec(NodoABB nodo, Categoria categoria, String resultado) {
         if (nodo != null) {
-            // Recorrer el subárbol izquierdo
-            listarPorCategoriaRec(nodo.getIzq(), categoria, resultado);
+            resultado = listarPorCategoriaRec(nodo.getIzq(), categoria, resultado);
 
-            // Verificar si el jugador pertenece a la categoría especificada
             Jugador jugador = (Jugador) nodo.getDato();
             if (categoria.equals(jugador.getCategoria())) {
-                // Si pertenece a la categoría, agregarlo al resultado con un separador
-                if (resultado.length() > 0) {
-                    resultado.append("|");                              // Agregar separador entre jugadores
+                if (!resultado.isEmpty()) {
+                    resultado += "|";
                 }
-                resultado.append(jugador.toString());
+                resultado += jugador.toString();
             }
-            // Recorrer el subárbol derecho
-            listarPorCategoriaRec(nodo.getDer(), categoria, resultado);
+            resultado = listarPorCategoriaRec(nodo.getDer(), categoria, resultado);
         }
+        return resultado;
     }
+
 
 }

@@ -1,5 +1,6 @@
 package dominio.Grafo;
 
+import dominio.RetornoDTO;
 import dominio.Sucursal;
 import dominio.lista.Lista;
 
@@ -30,5 +31,5 @@ public interface IGrafo {
 
     boolean dfs(Sucursal v);
 
-    public Lista<Sucursal> dijkstra(String codigoSucursalAnfitriona, int latenciaLimite);
+    public RetornoDTO dijkstra(String codigoSucursalAnfitriona, int latenciaLimite);
 }

@@ -58,12 +58,12 @@ public class Test14_SucursalesTorneo {
         s.registrarConexion("C", "F", 4);
 
         assertOk(s.sucursalesParaTorneo("A", 21), 21, "A;Sucursal A|B;Sucursal B|C;Sucursal C|D;Sucursal D|E;Sucursal E|F;Sucursal F|G;Sucursal G|H;Sucursal H|I;Sucursal I");
-//Excluimos a la de la latencia maxima E, y la segunda latencia maxima la D
+        //Excluimos a la de la latencia maxima E, y la segunda latencia maxima la D
         assertOk(s.sucursalesParaTorneo("A", 18), 14,//es la distancia de A a I
                 "A;Sucursal A|B;Sucursal B|C;Sucursal C|F;Sucursal F|G;Sucursal G|H;Sucursal H|I;Sucursal I");
         assertOk(s.sucursalesParaTorneo("A", 10), 9,//es la distancia de A a G
                 "A;Sucursal A|B;Sucursal B|G;Sucursal G|H;Sucursal H");
-//Si ponemos distancia 1, como no hay ninguna arista de valor uno nos queda el vertice A.
+        //Si ponemos distancia 1, como no hay ninguna arista de valor uno nos queda el vertice A.
         assertOk(s.sucursalesParaTorneo("A", 1), 0,//es la distancia de A a A
                 "A;Sucursal A");
 
@@ -121,8 +121,8 @@ public class Test14_SucursalesTorneo {
                 "A;Sucursal A|B;Sucursal B|C;Sucursal C|D;Sucursal D");
 
         //Pruebo actualizar los datos de la conexion para ver que funcione
-        assertOk(s.actualizarConexion("A","C",1));
-        assertOk(s.actualizarConexion("C","D",3));
+        assertOk(s.actualizarConexion("A", "C", 1));
+        assertOk(s.actualizarConexion("C", "D", 3));
         //ahora llegar a D nos cuesta 4, en vez de 7
         //el vertice E que antes costaba 17, ahora va a costar 17-3=14
         assertOk(s.sucursalesParaTorneo("A", 15), 14,

@@ -120,7 +120,7 @@ public class Test01_InicializarSistemaTest {
 
         retorno = sistema.listarJugadoresAscendente();
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
-        assertEquals("Alias1;Nombre1;Apellido1;PROFESIONAL|Alias2;Nombre2;Apellido2;ESTANDARD|", retorno.getValorString());
+        assertEquals("Alias1;Nombre1;Apellido1;PROFESIONAL|Alias2;Nombre2;Apellido2;ESTANDARD", retorno.getValorString());
     }
 
     @Test
@@ -407,12 +407,14 @@ public class Test01_InicializarSistemaTest {
     @Test
     void registrarSucursalError1() {
         Sistema sistema = new ImplementacionSistema();
-        sistema.inicializarSistema(2);
+        sistema.inicializarSistema(4);
 
         sistema.registrarSucursal("S1", "Sucursal 1");
         sistema.registrarSucursal("S2", "Sucursal 2");
+        sistema.registrarSucursal("S3", "Sucursal 3");
+        sistema.registrarSucursal("S4", "Sucursal 4");
 
-        Retorno retorno = sistema.registrarSucursal("S3", "Sucursal 3");
+        Retorno retorno = sistema.registrarSucursal("S5", "Sucursal 5");
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
     @Test
