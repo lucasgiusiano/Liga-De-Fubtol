@@ -375,7 +375,7 @@ public class Test01_InicializarSistemaTest {
 
         retorno = sistema.listarJugadoresDeEquipo("Peñarol");
 
-        assertEquals(retorno.getValorString(), "Federico;Federico;Valverde;PROFESIONAL|Forlan;Diego;Forlan;PROFESIONAL|La Pantera;Darwin;Núñez;PROFESIONAL|Pellistri;Facundo;Pellistri;PROFESIONAL|Suarez;Luis;Suarez;PROFESIONAL|");
+        assertEquals(retorno.getValorString(), "Federico;Federico;Valverde;PROFESIONAL|Forlan;Diego;Forlan;PROFESIONAL|La Pantera;Darwin;Núñez;PROFESIONAL|Pellistri;Facundo;Pellistri;PROFESIONAL|Suarez;Luis;Suarez;PROFESIONAL");
     }
 
     //Listar equipos por nombre descendente
@@ -402,7 +402,7 @@ public class Test01_InicializarSistemaTest {
         retorno = sistema.listarEquiposDescendente();
 
         // Ajustamos el test para incluir el delimitador al final de la cadena
-        assertEquals("Wanderers;Alejandro Cappuccio;0|River Plate;Ignacio Ithurralde;0|Racing;Eduardo Espinel;0|Progreso;Carlos Canobbio;0|Peñarol;Diego Aguirre;0|Nacional;Diego Testas;0|Miramar Misiones;Leonardo Medina;0|Liverpool;Emiliano Alfaro;0|Fénix;Leonel Rocco;0|Deportivo Maldonado;Joaquín Boghossian;0|Defensor Sporting;Martín Varini;0|Danubio;Alejandro Apud;0|Boston River;Jadson Viera;0|", retorno.getValorString());
+        assertEquals("Wanderers;Alejandro Cappuccio;0|River Plate;Ignacio Ithurralde;0|Racing;Eduardo Espinel;0|Progreso;Carlos Canobbio;0|Peñarol;Diego Aguirre;0|Nacional;Diego Testas;0|Miramar Misiones;Leonardo Medina;0|Liverpool;Emiliano Alfaro;0|Fénix;Leonel Rocco;0|Deportivo Maldonado;Joaquín Boghossian;0|Defensor Sporting;Martín Varini;0|Danubio;Alejandro Apud;0|Boston River;Jadson Viera;0", retorno.getValorString());
     }
     //Test de registrar Sucursales
     @Test
@@ -462,7 +462,20 @@ public class Test01_InicializarSistemaTest {
 
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
+    @Test
+    void RegistrarConexionConParametrosNullos() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(4);
 
+        sistema.registrarSucursal("S1", "Sucursal 1");
+        sistema.registrarSucursal("S2", "Sucursal 2");
+
+
+
+        retorno = sistema.registrarConexion("", null, 10);
+
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
+    }
     @Test
     void RegistrarConexionConSucursalInexistente() {
         Sistema sistema = new ImplementacionSistema();
@@ -475,7 +488,20 @@ public class Test01_InicializarSistemaTest {
 
         assertEquals(Retorno.Resultado.ERROR_3, retorno.getResultado());
     }
+    @Test
+    void RegistrarConexionYaExistente() {
+        Sistema sistema = new ImplementacionSistema();
+        sistema.inicializarSistema(4);
 
+        sistema.registrarSucursal("S1", "Sucursal 1");
+        sistema.registrarSucursal("S2", "Sucursal 2");
+        sistema.registrarConexion("S1", "S2", 10);
+
+
+        retorno = sistema.registrarConexion("S1", "S2", 10);
+
+        assertEquals(Retorno.Resultado.ERROR_4, retorno.getResultado());
+    }
     @Test
     void RegistrarConexionCorrecto() {
         Sistema sistema = new ImplementacionSistema();
@@ -553,8 +579,12 @@ public class Test01_InicializarSistemaTest {
 
         sistema.registrarSucursal("S1", "Sucursal Crítica");
         sistema.registrarSucursal("S2", "Sucursal Conectada");
+        sistema.registrarSucursal("S3", "Sucursal Conectada");
 
-        sistema.actualizarConexion("S1", "S2", 10);
+
+        sistema.registrarConexion("S1", "S2", 10);
+        sistema.registrarConexion("S1", "S3", 10);
+
 
         Retorno retorno = sistema.analizarSucursal("S1");
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
