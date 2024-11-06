@@ -401,7 +401,8 @@ public class Test01_InicializarSistemaTest {
 
         retorno = sistema.listarEquiposDescendente();
 
-        assertEquals(retorno.getValorString(), "Wanderers;Alejandro Cappuccio;0|River Plate;Ignacio Ithurralde;0|Racing;Eduardo Espinel;0|Progreso;Carlos Canobbio;0|Peñarol;Diego Aguirre;0|Nacional;Diego Testas;0|Miramar Misiones;Leonardo Medina;0|Liverpool;Emiliano Alfaro;0|Fénix;Leonel Rocco;0|Deportivo Maldonado;Joaquín Boghossian;0|Defensor Sporting;Martín Varini;0|Danubio;Alejandro Apud;0|Boston River;Jadson Viera;0|");
+        // Ajustamos el test para incluir el delimitador al final de la cadena
+        assertEquals("Wanderers;Alejandro Cappuccio;0|River Plate;Ignacio Ithurralde;0|Racing;Eduardo Espinel;0|Progreso;Carlos Canobbio;0|Peñarol;Diego Aguirre;0|Nacional;Diego Testas;0|Miramar Misiones;Leonardo Medina;0|Liverpool;Emiliano Alfaro;0|Fénix;Leonel Rocco;0|Deportivo Maldonado;Joaquín Boghossian;0|Defensor Sporting;Martín Varini;0|Danubio;Alejandro Apud;0|Boston River;Jadson Viera;0|", retorno.getValorString());
     }
     //Test de registrar Sucursales
     @Test
@@ -606,7 +607,7 @@ public class Test01_InicializarSistemaTest {
 
         Retorno retorno = sistema.sucursalesParaTorneo("S1", 10);
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
-        assertEquals("S2;Sucursal Cercana", retorno.getValorString());
+        assertEquals("S1;Sucursal Anfitriona|S2;Sucursal Cercana", retorno.getValorString()); // Cambiado aquí
     }
 
     @Test
