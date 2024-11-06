@@ -36,7 +36,6 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
         } else {
             insertarRec(this.raiz, dato);
         }
-        //balancear();
     }
 
     private void insertarRec(NodoABB nodo, T dato) {
@@ -55,37 +54,6 @@ public class ABB<T extends Comparable<T>> implements IAbb<T> {
                 insertarRec(nodo.getDer(), dato);
             }
         }
-    }
-
-    public void balancear() {
-        // Obtener los datos del árbol en una lista ordenada
-        List<T> elementos = new ArrayList<>();
-        obtenerElementosEnOrden(raiz, elementos);
-
-        // Reconstruir el árbol equilibrado
-        this.raiz = construirArbolBalanceado(elementos, 0, elementos.size() - 1);
-    }
-
-    private void obtenerElementosEnOrden(NodoABB<T> nodo, List<T> elementos) {
-        if (nodo != null) {
-            obtenerElementosEnOrden(nodo.getIzq(), elementos); // Subárbol izquierdo
-            elementos.add(nodo.getDato()); // Agregar el dato actual
-            obtenerElementosEnOrden(nodo.getDer(), elementos); // Subárbol derecho
-        }
-    }
-
-    private NodoABB<T> construirArbolBalanceado(List<T> elementos, int inicio, int fin) {
-        if (inicio > fin) {
-            return null;
-        }
-
-        int medio = (inicio + fin) / 2;
-        NodoABB<T> nodo = new NodoABB<>(elementos.get(medio));
-
-        nodo.setIzq(construirArbolBalanceado(elementos, inicio, medio - 1));
-        nodo.setDer(construirArbolBalanceado(elementos, medio + 1, fin));
-
-        return nodo;
     }
 
     @Override
