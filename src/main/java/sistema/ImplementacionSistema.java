@@ -44,8 +44,6 @@ public class ImplementacionSistema implements Sistema {
         } else {
             jugadores.insertar(j);
         }
-
-
         return Retorno.ok();
     }
 
